@@ -87,21 +87,31 @@
     background: rgba(255,255,255,0.3); 
 }
 
-        .mod-tag { font-size: 0.9em; font-weight: bold; color: #8b0000; display: block; }
+        .mod-tag { font-size: 1.1em; font-weight: bold; color: #8b0000; display: block; }
 
 .skills-list { 
-    min-height: 40px;      /* Altezza minima */
+    min-height: 60px;      /* Altezza minima */
     max-height: 150px;     /* Altezza massima per evitare l'accavallamento */
     overflow-y: auto;      /* Aggiunge lo scroll se le skill sono troppe */
     padding-right: 5px;    /* Spazio per la barra di scorrimento */
     margin-bottom: 5px;
 }
-        
+.scrollable-list {
+
+max-height: 120px; /* Altezza massima prima che compaia lo scroll */
+
+overflow-y: auto; /* Attiva lo scorrimento verticale se serve */
+
+padding-right: 5px; /* Evita che il testo tocchi la barra di scorrimento */
+
+margin-bottom: 5px;
+
+}        
         .buffed { color: var(--dark-gold); font-weight: bold; }
-        .section-title { margin-top: 10px; border-bottom: 1px solid var(--ink); display: flex; justify-content: space-between; font-weight: bold; font-size: 0.9em; }
+        .section-title { margin-top: 10px; border-bottom: 1px solid var(--ink); display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2em; }
         ul { list-style: none; padding: 0; margin: 4px 0; }
         li { display: flex; justify-content: space-between; align-items: center; margin: 2px 0; border-bottom: 1px dotted rgba(0,0,0,0.1); }
-        .delete-btn { background: #8b0000; color: white; border: none; padding: 1px 5px; cursor: pointer; border-radius: 4px; font-size: 0.7em; }
+        .delete-btn { background: #8b0000; color: white; border: none; padding: 1px 5px; cursor: pointer; border-radius: 4px; font-size: 0.9em; }
         .add-small { background: var(--ink); color: var(--gold); border: 1px solid var(--gold); padding: 1px 6px; cursor: pointer; font-size: 0.75em; }
 /* Colori monete aggiornati con contorno per leggibilità */
 .coin-gp { 
@@ -160,7 +170,7 @@
 }
 .vit-box { text-align: center; flex: 1; }
 .vit-box label { display: block; font-size: 0.7em; color: #555; text-transform: uppercase; }
-.vit-val { font-size: 1.4em; font-weight: bold; color: #8b0000; }
+.vit-val { font-size: 1.5em; font-weight: bold; color: #8b0000; }
 .is-buffed-val { color: var(--dark-gold) !important; font-weight: bold; }
 /* Ingrandiamo i testi dell'intestazione (Razza, Classe, Livello, XP) */
 .char-info-large { font-size: 1.1em !important; font-weight: bold; }
@@ -181,13 +191,27 @@
 
 /* Piccoli titoli per le categorie di equipaggiamento */
 .equip-category-title {
-    font-size: 0.75em;
+    font-size: 1.1em;
     color: #555;
     font-style: italic;
     border-bottom: 1px solid rgba(0,0,0,0.1);
     margin-top: 5px;
     margin-bottom: 3px;
 }
+ul li {
+    font-size: 1.1em; /* Puoi aumentare o diminuire questo valore (es. 1em o 0.8em) */
+}
+
+/* Se vuoi che i Buff abbiano una dimensione ancora diversa */
+.buffed {
+    font-size: 1.1em; /* Questo influenzerà solo gli elementi con la scintilla ✨ */
+}
+
+/* Per le descrizioni piccole tra parentesi nei buff */
+.buffed small {
+            font-size: 0.85em; 
+            opacity: 0.9; /* Li rende leggermente meno marcati del nome principale */
+        }
     </style>
 </head>
 <body>
@@ -202,7 +226,6 @@
             <div class="form-group"><label>Razza</label><input type="text" id="pRace" placeholder="Nano"></div>
             <div class="form-group"><label>Livello</label><input type="number" id="pLevel" value="1"></div>
             <div class="form-group"><label>PF Max</label><input type="number" id="pHP" value="10"></div>
-            <div class="form-group"><label>CA Base</label><input type="number" id="pAC" value="10"></div>
             <div class="form-group"><label>FOR</label><input type="number" id="pSTR" value="10"></div>
             <div class="form-group"><label>DES</label><input type="number" id="pDEX" value="10"></div>
             <div class="form-group"><label>COS</label><input type="number" id="pCON" value="10"></div>
@@ -329,7 +352,6 @@ if (statName === 'CA') {
                 INT: parseInt(document.getElementById('pINT').value) || 10,
                 SAG: parseInt(document.getElementById('pWIS').value) || 10,
                 CAR: parseInt(document.getElementById('pCHA').value) || 10,
-                CA: parseInt(document.getElementById('pAC').value) || 10,
                 PF: parseInt(document.getElementById('pHP').value) || 10
             },
             skills: { "Percezione": 0, "Intuizione": 0 },
@@ -503,7 +525,7 @@ const statsHtml = stats.map(s => {
                         <input type="number" 
                                class="inline-edit vit-val ${c.isBuffed ? 'is-buffed-val' : ''}" 
                                title="${c.isBuffed ? c.tooltip : ''}"
-                               style="font-size:1em; width:35px; text-align:center;" 
+                               style="font-size:1.5em; width:35px; text-align:center;" 
                                value="${c.total}" 
                                onchange="updateStat(${char.id}, '${s}', this.value, ${currentBonus})">
                         <span class="mod-tag">(${mod})</span>
@@ -573,7 +595,7 @@ Object.keys(char.skills).map(s => {
     
     return `
         <li>
-            <span>${s}: ${formattedTotal}</span>
+            <span><b>${s}</b>: ${formattedTotal}</span>
             <button class="delete-btn" onclick="deleteSkill(${char.id}, '${s}')">x</button>
         </li>`;
 }).join('')
@@ -607,19 +629,14 @@ if (e.useStat) {
     finalDamage = `${e.value} ${sign} ${Math.abs(mod)}`;
 }
 
-                        return `<li><span><b>${e.name}</b> [${e.toHit}] (${finalDamage})</span> <button class="delete-btn" onclick="deleteItem(${char.id}, 'equipment', ${originalIndex})">x</button></li>`;
-                    }).join('')}</ul>
-
-                    <div class="equip-category-title">Protezioni</div>
-                    <ul>${char.equipment.filter(e => e.type === 'armatura' || e.type === 'scudo').map((e, i) => {
-                        const originalIndex = char.equipment.indexOf(e);
-                        return `<li>
-                            <span>
-                                <b>${e.name}</b> (${e.value} CA) 
-                                ${e.stealthDis ? '<span class="dis-tag">SVA FUR</span>' : ''}
-                            </span> 
-                            <button class="delete-btn" onclick="deleteItem(${char.id}, 'equipment', ${originalIndex})">x</button>
-                        </li>`;
+return `<li>
+            <span>
+                <b>${e.name}</b> 
+                ${e.toHit ? `[${e.toHit}]` : ''} 
+                (${finalDamage})
+            </span> 
+            <button class="delete-btn" onclick="deleteItem(${char.id}, 'equipment', ${originalIndex})">x</button>
+        </li>`;
                     }).join('')}</ul>
                     
                     <div class="equip-category-title">Altro</div>
