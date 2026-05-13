@@ -638,6 +638,21 @@ return `<li>
             <button class="delete-btn" onclick="deleteItem(${char.id}, 'equipment', ${originalIndex})">x</button>
         </li>`;
                     }).join('')}</ul>
+
+<div class="equip-category-title">Armature e Scudi</div>
+                    <ul>${char.equipment.filter(e => e.type === 'armatura' || e.type === 'scudo').map((e, i) => {
+                        const originalIndex = char.equipment.indexOf(e);
+                        const isArmor = e.type === 'armatura';
+                        
+                        return `<li>
+                            <span>
+                                <b>${e.name}</b> 
+                                (${isArmor ? 'CA ' + e.value : '+' + e.value})
+                                ${e.stealthDis ? '<span class="dis-tag" title="Svantaggio Furtività">DIS</span>' : ''}
+                            </span> 
+                            <button class="delete-btn" onclick="deleteItem(${char.id}, 'equipment', ${originalIndex})">x</button>
+                        </li>`;
+                    }).join('')}</ul>
                     
                     <div class="equip-category-title">Altro</div>
                     <ul>${char.equipment.filter(e => e.type !== 'arma' && e.type !== 'armatura' && e.type !== 'scudo').map((e, i) => {
