@@ -90,7 +90,11 @@
         .mod-tag { font-size: 0.9em; font-weight: bold; color: #8b0000; display: block; }
 
 .skills-list { 
-    height: 90px; 
+    min-height: 40px;      /* Altezza minima */
+    max-height: 150px;     /* Altezza massima per evitare l'accavallamento */
+    overflow-y: auto;      /* Aggiunge lo scroll se le skill sono troppe */
+    padding-right: 5px;    /* Spazio per la barra di scorrimento */
+    margin-bottom: 5px;
 }
         
         .buffed { color: var(--dark-gold); font-weight: bold; }
@@ -451,6 +455,15 @@ function addBuff(id) {
         save();
     }
 
+function deleteSkill(id, skillName) {
+    const char = party.find(p => p.id === id);
+    if (char && char.skills[skillName] !== undefined) {
+        // Il comando 'delete' rimuove una proprietà da un oggetto
+        delete char.skills[skillName]; 
+        save();
+    }
+}
+
     function removeChar(id) {
         if(confirm("Eliminare l'eroe?")) {
             party = party.filter(p => p.id !== id);
@@ -537,14 +550,25 @@ grid.innerHTML += `
                         </div>
                     </div>
 
-                    <div class="stats-container">
-                        <div class="main-stats">${statsHtml}</div>
-                        <div class="section-title">Skill <button class="add-small" onclick="addSkill(${char.id})">+</button></div>
-                        <div class="skills-list"><ul>${
-                            Object.keys(char.skills).map(s => `<li><span>${s}: ${calculate(char, s).total}</span></li>`).join('')
-                        }</ul></div>
-                    </div>
-
+<div class="stats-container">
+    <div class="main-stats">${statsHtml}</div>
+    <div class="section-title">Skill <button class="add-small" onclick="addSkill(${char.id})">+</button></div>
+    <div class="skills-list">
+        <ul>${
+Object.keys(char.skills).map(s => {
+    const total = calculate(char, s).total;
+    // Se il numero è >= 0 aggiunge il "+", altrimenti lo lascia così com'è
+    const formattedTotal = total >= 0 ? `+${total}` : total;
+    
+    return `
+        <li>
+            <span>${s}: ${formattedTotal}</span>
+            <button class="delete-btn" onclick="deleteSkill(${char.id}, '${s}')">x</button>
+        </li>`;
+}).join('')
+        }</ul>
+    </div>
+</div>
                     <div class="section-title">Tesoro <button class="add-small" onclick="updateMoney(${char.id})">±</button></div>
                     <div class="money-display">
                         <span class="coin-gp">${coins.gp}mo</span>
