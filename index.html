@@ -394,16 +394,27 @@ function addEquip(id) {
     let dexMode = "0";
     let manualDex = 0;
     let stealthDis = false;
-    let useStat = null; // Variabile per salvare se usiamo la Forza
+    let useStat = null; 
 
     if (type === 'arma') {
-        const autoStr = confirm("Vuoi aggiungere automaticamente il bonus FOR al danno?\n(OK per FOR, Annulla per valore manuale)");
+        // PRIMA SCELTA: Forza
+        const autoStr = confirm("Vuoi aggiungere il bonus FOR al danno?");
+        
         if (autoStr) {
             val = prompt("Inserisci solo i dadi (es. 1d8):");
             useStat = "FOR";
         } else {
-            val = prompt("Inserisci danno completo (es. 1d8+2):");
-            useStat = null;
+            // SECONDA SCELTA (Se Forza è No): Destrezza
+            const autoDex = confirm("Vuoi aggiungere il bonus DES al danno? (Per armi accurate o a gittata)");
+            
+            if (autoDex) {
+                val = prompt("Inserisci solo i dadi (es. 1d6):");
+                useStat = "DES";
+            } else {
+                // TERZA SCELTA: Valore manuale
+                val = prompt("Inserisci danno completo (es. 1d8+2):");
+                useStat = null;
+            }
         }
         toHit = prompt("Tiro per colpire (es. +5):");
     } else if (type === 'armatura') {
@@ -583,13 +594,18 @@ Object.keys(char.skills).map(s => {
                         const originalIndex = char.equipment.indexOf(e);
                         
                         // LOGICA CALCOLO DANNO DINAMICO
-                        let finalDamage = e.value;
-                        if (e.useStat === 'FOR') {
-                            const strTotal = calculate(char, 'FOR').total;
-                            const mod = Math.floor((strTotal - 10) / 2);
-                            const sign = mod >= 0 ? '+' : '-';
-                            finalDamage = `${e.value} ${sign} ${Math.abs(mod)}`;
-                        }
+let finalDamage = e.value;
+
+// Se useStat esiste (è FOR o DES)
+if (e.useStat) {
+    // Recuperiamo il totale della statistica scelta (es. Destrezza)
+    const statTotal = calculate(char, e.useStat).total;
+    // Calcoliamo il modificatore
+    const mod = Math.floor((statTotal - 10) / 2);
+    const sign = mod >= 0 ? '+' : '-';
+    // Componiamo la scritta: Dadi + Modificatore
+    finalDamage = `${e.value} ${sign} ${Math.abs(mod)}`;
+}
 
                         return `<li><span><b>${e.name}</b> [${e.toHit}] (${finalDamage})</span> <button class="delete-btn" onclick="deleteItem(${char.id}, 'equipment', ${originalIndex})">x</button></li>`;
                     }).join('')}</ul>
