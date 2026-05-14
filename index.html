@@ -196,6 +196,88 @@
 <script>
     let party = JSON.parse(localStorage.getItem('dnd_ultimate_tracker')) || [];
 
+    // --- LOGICA DI OTTIMIZZAZIONE IMMAGINI ---
+    
+    // Questa funzione riduce le dimensioni dell'immagine per risparmiare memoria
+    async function processImage(file) {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 150; // Dimensione ideale per un token circolare
+                    const scaleSize = MAX_WIDTH / img.width;
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = img.height * scaleSize;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    
+                    // Esportiamo in JPEG con qualità 0.7 per il massimo risparmio
+                    resolve(canvas.toDataURL('image/jpeg', 0.7));
+                };
+            };
+        });
+    }
+
+    function save() {
+        try {
+            localStorage.setItem('dnd_ultimate_tracker', JSON.stringify(party));
+            render();
+        } catch (e) {
+            console.error("Errore di memoria:", e);
+            alert("Attenzione: Lo spazio di archiviazione è esaurito! Prova a eliminare qualche vecchio eroe.");
+        }
+    }
+
+    // --- FUNZIONI DI GESTIONE PERSONAGGIO ---
+
+    async function addCharacter() {
+        const file = document.getElementById('pImage').files[0];
+        let imgBase64 = "";
+        
+        // Se c'è un file, usiamo la nostra nuova funzione di compressione
+        if (file) {
+            imgBase64 = await processImage(file);
+        }
+
+        const char = {
+            id: Date.now(),
+            name: document.getElementById('pName').value || "Eroe",
+            class: document.getElementById('pClass').value || "Classe",
+            race: document.getElementById('pRace').value || "Razza",
+            level: parseInt(document.getElementById('pLevel').value) || 1,
+            proficiency: 2, 
+            image: imgBase64,
+            baseStats: {
+                FOR: parseInt(document.getElementById('pSTR').value) || 10,
+                DES: parseInt(document.getElementById('pDEX').value) || 10,
+                COS: parseInt(document.getElementById('pCON').value) || 10,
+                INT: parseInt(document.getElementById('pINT').value) || 10,
+                SAG: parseInt(document.getElementById('pWIS').value) || 10,
+                CAR: parseInt(document.getElementById('pCHA').value) || 10,
+                PF: parseInt(document.getElementById('pHP').value) || 10
+            },
+            skills: {}, 
+            xp: 0,
+            totalMoney: 0,
+            equipment: [],
+            buffs: []
+        };
+
+        party.push(char);
+        save();
+
+        // Reset dei campi input
+        document.getElementById('pName').value = "";
+        document.getElementById('pImage').value = "";
+    }
+
+    // --- FUNZIONI DI CALCOLO E UTILITY ---
+
     function getDenominations(totalCopper) {
         let remainder = totalCopper;
         const gp = Math.floor(remainder / 100);
@@ -208,8 +290,7 @@
     function updateField(id, field, value) {
         const char = party.find(p => p.id === id);
         char[field] = value;
-        localStorage.setItem('dnd_ultimate_tracker', JSON.stringify(party));
-        render(); 
+        save();
     }
 
     function updateStat(id, stat, value, currentBonus) {
@@ -270,41 +351,6 @@
         };
     }
 
-    async function addCharacter() {
-        const file = document.getElementById('pImage').files[0];
-        let imgBase64 = "";
-        if (file) imgBase64 = await toBase64(file);
-
-        const char = {
-            id: Date.now(),
-            name: document.getElementById('pName').value || "Eroe",
-            class: document.getElementById('pClass').value || "Classe",
-            race: document.getElementById('pRace').value || "Razza",
-            level: parseInt(document.getElementById('pLevel').value) || 1,
-            proficiency: 2, 
-            image: imgBase64,
-            baseStats: {
-                FOR: parseInt(document.getElementById('pSTR').value) || 10,
-                DES: parseInt(document.getElementById('pDEX').value) || 10,
-                COS: parseInt(document.getElementById('pCON').value) || 10,
-                INT: parseInt(document.getElementById('pINT').value) || 10,
-                SAG: parseInt(document.getElementById('pWIS').value) || 10,
-                CAR: parseInt(document.getElementById('pCHA').value) || 10,
-                PF: parseInt(document.getElementById('pHP').value) || 10
-            },
-            skills: {}, 
-            xp: 0,
-            totalMoney: 0,
-            equipment: [],
-            buffs: []
-        };
-        party.push(char);
-        save();
-    }
-
-    /**
-     * FUNZIONE MODIFICATA: Permette di scegliere tra calcolo Auto o Manuale
-     */
     function addSkill(id) {
         const name = prompt("Nome Abilità (es. Intimidire):");
         if (!name) return;
@@ -315,25 +361,27 @@
         if (choice === "1") {
             const stat = prompt("Caratteristica necessaria (FOR, DES, COS, INT, SAG, CAR):").toUpperCase();
             const validStats = ['FOR', 'DES', 'COS', 'INT', 'SAG', 'CAR'];
-            
             if (validStats.includes(stat)) {
-                char.skills[name] = stat; // Salviamo la stringa della caratteristica
+                char.skills[name] = stat;
                 save();
             } else {
-                alert("Caratteristica non valida! Usa FOR, DES, COS, INT, SAG o CAR.");
+                alert("Caratteristica non valida!");
             }
         } else if (choice === "2") {
-            const val = parseInt(prompt("Inserisci il bonus totale per questa abilità (es. 5):")) || 0;
-            char.skills[name] = val; // Salviamo il numero fisso
+            const val = parseInt(prompt("Inserisci il bonus totale:")) || 0;
+            char.skills[name] = val;
             save();
         }
     }
 
     function addBuff(id) {
         const name = prompt("Fonte:");
-        const stat = prompt("Stat (FOR, CA, ecc):").toUpperCase();
+        const stat = prompt("Stat (FOR, CA, PF, ecc):").toUpperCase();
         const val = parseInt(prompt("Bonus:"));
-        if (name && stat) { party.find(p => p.id === id).buffs.push({ name, stat, value: val }); save(); }
+        if (name && stat) { 
+            party.find(p => p.id === id).buffs.push({ name, stat, value: val }); 
+            save(); 
+        }
     }
 
     function updateMoney(id) {
@@ -385,18 +433,6 @@
             char.equipment.push({ name, type, value: val, toHit, dexMode, manualDex, stealthDis, useStat });
             save();
         }
-    }
-
-    const toBase64 = file => new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-    });
-
-    function save() {
-        localStorage.setItem('dnd_ultimate_tracker', JSON.stringify(party));
-        render();
     }
 
     function deleteItem(id, category, index) {
@@ -505,7 +541,6 @@
                                     let totalSkill;
                                     let displayLabel = "";
 
-                                    // Se skillValue è una stringa (es. "FOR"), facciamo il calcolo automatico
                                     if (typeof skillValue === 'string') {
                                         const statTotal = calculate(char, skillValue).total;
                                         const mod = Math.floor((statTotal - 10) / 2);
@@ -513,7 +548,6 @@
                                         totalSkill = mod + prof;
                                         displayLabel = skillValue;
                                     } else {
-                                        // Se è un numero, usiamo il valore manuale direttamente
                                         totalSkill = skillValue;
                                         displayLabel = "Man";
                                     }
@@ -565,7 +599,7 @@
                     }).join('')}</ul>
 
                     <div class="section-title">Buff <button class="add-small" onclick="addBuff(${char.id})">+</button></div>
-                    <ul>${char.buffs.map((b, i) => `<li><span class="buffed" title="${b.effect}">✨ ${b.name} <small>(${b.effect || b.stat})</small></span> <button class="delete-btn" onclick="deleteItem(${char.id}, 'buffs', ${i})">x</button></li>`).join('')}</ul>
+                    <ul>${char.buffs.map((b, i) => `<li><span class="buffed">✨ ${b.name} <small>(${b.stat})</small></span> <button class="delete-btn" onclick="deleteItem(${char.id}, 'buffs', ${i})">x</button></li>`).join('')}</ul>
                 </div>
             `;
         });
