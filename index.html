@@ -47,171 +47,124 @@
         label { font-size: 0.75em; margin-bottom: 2px; font-weight: bold; }
         input, select, button { padding: 5px; border: 1px solid var(--ink); font-family: 'MedievalSharp', cursive; }
 
-        /* Griglia schede: min 320px permette di averne 4 su schermi Full HD */
-.character-grid { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
-    gap: 10px; 
-    width: 100%;
-}
+        .character-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+            gap: 10px; 
+            width: 100%;
+        }
         
-.char-card {
-    background: var(--parchment);
-    border: var(--border);
-    padding: 8px;
-    border-radius: 10px;
-    position: relative;
-    background-image: url('https://www.transparenttextures.com/patterns/parchment.png');
-    font-size: 0.85em;
-}
+        .char-card {
+            background: var(--parchment);
+            border: var(--border);
+            padding: 8px;
+            border-radius: 10px;
+            position: relative;
+            background-image: url('https://www.transparenttextures.com/patterns/parchment.png');
+            font-size: 0.85em;
+        }
 
         .char-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; border-bottom: 2px solid var(--ink); padding-bottom: 8px; }
-        
-        /* Token ridotto a 60px per salvare spazio */
         .char-token { width: 60px; height: 60px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; background: #333; }
 
-.stats-container { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 5px; 
-}        
-        /* 4 colonne per far stare le stats su due righe pulite */
-.main-stats { 
-    display: grid; 
-    grid-template-columns: repeat(3, 1fr); 
-    gap: 4px; 
-}.stat-box { 
-    text-align: center; 
-    border: 1px solid rgba(0,0,0,0.1); 
-    padding: 2px; 
-    background: rgba(255,255,255,0.3); 
-}
+        .stats-container { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 5px; 
+        }        
+        .main-stats { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 4px; 
+        }
+        .stat-box { 
+            text-align: center; 
+            border: 1px solid rgba(0,0,0,0.1); 
+            padding: 2px; 
+            background: rgba(255,255,255,0.3); 
+        }
 
         .mod-tag { font-size: 1.1em; font-weight: bold; color: #8b0000; display: block; }
 
-.skills-list { 
-    min-height: 60px;      /* Altezza minima */
-    max-height: 150px;     /* Altezza massima per evitare l'accavallamento */
-    overflow-y: auto;      /* Aggiunge lo scroll se le skill sono troppe */
-    padding-right: 5px;    /* Spazio per la barra di scorrimento */
-    margin-bottom: 5px;
-}
-.scrollable-list {
-
-max-height: 120px; /* Altezza massima prima che compaia lo scroll */
-
-overflow-y: auto; /* Attiva lo scorrimento verticale se serve */
-
-padding-right: 5px; /* Evita che il testo tocchi la barra di scorrimento */
-
-margin-bottom: 5px;
-
-}        
+        .skills-list { 
+            min-height: 60px;
+            max-height: 150px;
+            overflow-y: auto;
+            padding-right: 5px;
+            margin-bottom: 5px;
+        }
         .buffed { color: var(--dark-gold); font-weight: bold; }
         .section-title { margin-top: 10px; border-bottom: 1px solid var(--ink); display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2em; }
         ul { list-style: none; padding: 0; margin: 4px 0; }
         li { display: flex; justify-content: space-between; align-items: center; margin: 2px 0; border-bottom: 1px dotted rgba(0,0,0,0.1); }
         .delete-btn { background: #8b0000; color: white; border: none; padding: 1px 5px; cursor: pointer; border-radius: 4px; font-size: 0.9em; }
         .add-small { background: var(--ink); color: var(--gold); border: 1px solid var(--gold); padding: 1px 6px; cursor: pointer; font-size: 0.75em; }
-/* Colori monete aggiornati con contorno per leggibilità */
-.coin-gp { 
-    color: #ffd700; 
-    font-size: 1.2em; 
-    font-weight: bold; 
-    text-shadow: 1px 1px 2px #000; 
-} /* Oro */
 
-.coin-sp { 
-    color: #e0e0e0; 
-    font-size: 1.2em; 
-    font-weight: bold; 
-    text-shadow: 1px 1px 2px #000; 
-} /* Argento */
+        .coin-gp { color: #ffd700; font-size: 1.2em; font-weight: bold; text-shadow: 1px 1px 2px #000; }
+        .coin-sp { color: #e0e0e0; font-size: 1.2em; font-weight: bold; text-shadow: 1px 1px 2px #000; }
+        .coin-cp { color: #cd7f32; font-size: 1.2em; font-weight: bold; text-shadow: 1px 1px 2px #000; }
 
-.coin-cp { 
-    color: #cd7f32; 
-    font-size: 1.2em; 
-    font-weight: bold; 
-    text-shadow: 1px 1px 2px #000; 
-} /* Rame */
-
-/* Layout borsa aggiornato a 3 colonne (senza platino) */
-.money-display {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 4px;
-    background: rgba(0,0,0,0.1);
-    padding: 8px;
-    border-radius: 4px;
-    margin-top: 5px;
-    text-align: center;
-}
-.inline-edit {
-    background: transparent;
-    border: none;
-    font-family: inherit;
-    font-size: inherit;
-    color: inherit;
-    padding: 0;
-    width: auto;
-    border-bottom: 1px dashed rgba(0,0,0,0.1);
-}
-.inline-edit:focus { background: rgba(255,255,255,0.5); outline: none; border-bottom: 1px solid var(--gold); }
-
-/* Box HP e CA in alto */
-.vitality-row {
-    display: flex;
-    justify-content: space-around;
-    gap: 10px;
-    margin-bottom: 10px;
-    background: rgba(0,0,0,0.05);
-    padding: 5px;
-    border-radius: 8px;
-}
-.vit-box { text-align: center; flex: 1; }
-.vit-box label { display: block; font-size: 0.7em; color: #555; text-transform: uppercase; }
-.vit-val { font-size: 1.5em; font-weight: bold; color: #8b0000; }
-.is-buffed-val { color: var(--dark-gold) !important; font-weight: bold; }
-/* Ingrandiamo i testi dell'intestazione (Razza, Classe, Livello, XP) */
-.char-info-large { font-size: 1.1em !important; font-weight: bold; }
-.char-xp-large { font-size: 0.95em !important; color: #555; margin-top: 2px; }
-
-/* Tag rosso per lo svantaggio a Furtività */
-.dis-tag { 
-    color: white; 
-    background: #8b0000; 
-    padding: 1px 4px; 
-    border-radius: 3px; 
-    font-size: 0.75em; 
-    font-weight: bold; 
-    margin-left: 5px;
-    text-transform: uppercase;
-    vertical-align: middle;
-}
-
-/* Piccoli titoli per le categorie di equipaggiamento */
-.equip-category-title {
-    font-size: 1.1em;
-    color: #555;
-    font-style: italic;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-    margin-top: 5px;
-    margin-bottom: 3px;
-}
-ul li {
-    font-size: 1.1em; /* Puoi aumentare o diminuire questo valore (es. 1em o 0.8em) */
-}
-
-/* Se vuoi che i Buff abbiano una dimensione ancora diversa */
-.buffed {
-    font-size: 1.1em; /* Questo influenzerà solo gli elementi con la scintilla ✨ */
-}
-
-/* Per le descrizioni piccole tra parentesi nei buff */
-.buffed small {
-            font-size: 0.85em; 
-            opacity: 0.9; /* Li rende leggermente meno marcati del nome principale */
+        .money-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            background: rgba(0,0,0,0.1);
+            padding: 8px;
+            border-radius: 4px;
+            margin-top: 5px;
+            text-align: center;
         }
+        .inline-edit {
+            background: transparent;
+            border: none;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+            padding: 0;
+            width: auto;
+            border-bottom: 1px dashed rgba(0,0,0,0.1);
+        }
+        .inline-edit:focus { background: rgba(255,255,255,0.5); outline: none; border-bottom: 1px solid var(--gold); }
+
+        .vitality-row {
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+            margin-bottom: 10px;
+            background: rgba(0,0,0,0.05);
+            padding: 5px;
+            border-radius: 8px;
+        }
+        .vit-box { text-align: center; flex: 1; }
+        .vit-box label { display: block; font-size: 0.7em; color: #555; text-transform: uppercase; }
+        .vit-val { font-size: 1.5em; font-weight: bold; color: #8b0000; }
+        .is-buffed-val { color: var(--dark-gold) !important; font-weight: bold; }
+        .char-info-large { font-size: 1.1em !important; font-weight: bold; }
+        .char-xp-large { font-size: 0.95em !important; color: #555; margin-top: 2px; }
+
+        .dis-tag { 
+            color: white; 
+            background: #8b0000; 
+            padding: 1px 4px; 
+            border-radius: 3px; 
+            font-size: 0.75em; 
+            font-weight: bold; 
+            margin-left: 5px;
+            text-transform: uppercase;
+            vertical-align: middle;
+        }
+
+        .equip-category-title {
+            font-size: 1.1em;
+            color: #555;
+            font-style: italic;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            margin-top: 5px;
+            margin-bottom: 3px;
+        }
+        ul li { font-size: 1.1em; }
+        .buffed { font-size: 1.1em; }
+        .buffed small { font-size: 0.85em; opacity: 0.9; }
     </style>
 </head>
 <body>
@@ -242,33 +195,29 @@ ul li {
 
 <script>
     let party = JSON.parse(localStorage.getItem('dnd_ultimate_tracker')) || [];
-function getDenominations(totalCopper) {
-    let remainder = totalCopper;
-    
-    // Rimosso il Platino, iniziamo direttamente dall'Oro
-    const gp = Math.floor(remainder / 100);
-    remainder %= 100;
-    
-    const sp = Math.floor(remainder / 10);
-    const cp = remainder % 10;
-    
-    return { gp, sp, cp };
-}
-function updateField(id, field, value) {
-    const char = party.find(p => p.id === id);
-    char[field] = value;
-    localStorage.setItem('dnd_ultimate_tracker', JSON.stringify(party));
-    // Non chiamiamo render() qui per non perdere il focus mentre scrivi
-}
 
-// Per modificare le statistiche base (FOR, DES, ecc.)
-function updateStat(id, stat, value, currentBonus) {
-    const char = party.find(p => p.id === id);
-    // Sottraiamo il bonus attuale dal valore inserito per ottenere la nuova base
-    char.baseStats[stat] = (parseInt(value) || 0) - currentBonus;
-    save(); 
-}
-    // Calcola il modificatore (+3, -1, ecc)
+    function getDenominations(totalCopper) {
+        let remainder = totalCopper;
+        const gp = Math.floor(remainder / 100);
+        remainder %= 100;
+        const sp = Math.floor(remainder / 10);
+        const cp = remainder % 10;
+        return { gp, sp, cp };
+    }
+
+    function updateField(id, field, value) {
+        const char = party.find(p => p.id === id);
+        char[field] = value;
+        localStorage.setItem('dnd_ultimate_tracker', JSON.stringify(party));
+        render(); 
+    }
+
+    function updateStat(id, stat, value, currentBonus) {
+        const char = party.find(p => p.id === id);
+        char.baseStats[stat] = (parseInt(value) || 0) - currentBonus;
+        save(); 
+    }
+
     function getModifier(score) {
         const mod = Math.floor((score - 10) / 2);
         return mod >= 0 ? `+${mod}` : mod;
@@ -279,16 +228,14 @@ function updateStat(id, stat, value, currentBonus) {
         let bonus = 0;
         let sources = [`Base: ${base}`];
 
-char.buffs.forEach(b => {
+        char.buffs.forEach(b => {
             if (b.stat === statName) {
                 bonus += b.value;
-                // Formattazione richiesta: +tot per via del buff [Nome]
                 sources.push(`${b.value > 0 ? '+' : ''}${b.value} per via del buff ${b.name}`);
             }
         });
 
-if (statName === 'CA') {
-            // Prendiamo il modificatore di Destrezza attuale come numero
+        if (statName === 'CA') {
             const dexScore = char.baseStats['DES'] || 10;
             const dexMod = Math.floor((dexScore - 10) / 2);
 
@@ -296,19 +243,14 @@ if (statName === 'CA') {
                 if (e.type === 'armatura') {
                     let armorBase = parseInt(e.value) || 0;
                     let appliedDex = 0;
-
-                    // Logica di calcolo Destrezza
                     switch(e.dexMode) {
-                        case "1": appliedDex = dexMod; break; // Piena
-                        case "2": appliedDex = Math.min(dexMod, 2); break; // Max +2
-                        case "3": appliedDex = 0; break; // Nessuna
-                        case "4": appliedDex = e.manualDex; break; // Manuale
+                        case "1": appliedDex = dexMod; break;
+                        case "2": appliedDex = Math.min(dexMod, 2); break;
+                        case "3": appliedDex = 0; break;
+                        case "4": appliedDex = e.manualDex; break;
                         default: appliedDex = 0;
                     }
-
                     let totalArmorCA = armorBase + appliedDex;
-                    // In D&D la CA dell'armatura sostituisce il 10 + DES base.
-                    // Quindi calcoliamo quanto aggiunge rispetto alla CA Base (solitamente 10)
                     let armorBonus = totalArmorCA - base; 
                     bonus += armorBonus;
                     sources.push(`${e.name}: CA ${totalArmorCA} (${e.value} base + ${appliedDex} DES)`);
@@ -319,11 +261,6 @@ if (statName === 'CA') {
                     sources.push(`${e.name}: +${v}`);
                 }
             });
-        }
-
-        if (char.skills[statName] !== undefined) {
-            base = char.skills[statName];
-            sources = [`Competenza/Base: ${base}`];
         }
 
         return {
@@ -344,6 +281,7 @@ if (statName === 'CA') {
             class: document.getElementById('pClass').value || "Classe",
             race: document.getElementById('pRace').value || "Razza",
             level: parseInt(document.getElementById('pLevel').value) || 1,
+            proficiency: 2, 
             image: imgBase64,
             baseStats: {
                 FOR: parseInt(document.getElementById('pSTR').value) || 10,
@@ -354,8 +292,8 @@ if (statName === 'CA') {
                 CAR: parseInt(document.getElementById('pCHA').value) || 10,
                 PF: parseInt(document.getElementById('pHP').value) || 10
             },
-            skills: { "Percezione": 0, "Intuizione": 0 },
-	    xp: 0,
+            skills: {}, 
+            xp: 0,
             totalMoney: 0,
             equipment: [],
             buffs: []
@@ -364,11 +302,31 @@ if (statName === 'CA') {
         save();
     }
 
-    /* --- Funzioni di gestione (Add Skill, Buff, Equip) --- */
+    /**
+     * FUNZIONE MODIFICATA: Permette di scegliere tra calcolo Auto o Manuale
+     */
     function addSkill(id) {
-        const name = prompt("Nome Abilità:");
-        const val = parseInt(prompt("Modificatore totale:"));
-        if (name) { party.find(p => p.id === id).skills[name] = val; save(); }
+        const name = prompt("Nome Abilità (es. Intimidire):");
+        if (!name) return;
+
+        const choice = prompt("Scegli come calcolare il bonus:\n1: In base a Caratteristica (Auto)\n2: Valore Manuale (Fisso)");
+        const char = party.find(p => p.id === id);
+
+        if (choice === "1") {
+            const stat = prompt("Caratteristica necessaria (FOR, DES, COS, INT, SAG, CAR):").toUpperCase();
+            const validStats = ['FOR', 'DES', 'COS', 'INT', 'SAG', 'CAR'];
+            
+            if (validStats.includes(stat)) {
+                char.skills[name] = stat; // Salviamo la stringa della caratteristica
+                save();
+            } else {
+                alert("Caratteristica non valida! Usa FOR, DES, COS, INT, SAG o CAR.");
+            }
+        } else if (choice === "2") {
+            const val = parseInt(prompt("Inserisci il bonus totale per questa abilità (es. 5):")) || 0;
+            char.skills[name] = val; // Salviamo il numero fisso
+            save();
+        }
     }
 
     function addBuff(id) {
@@ -378,99 +336,57 @@ if (statName === 'CA') {
         if (name && stat) { party.find(p => p.id === id).buffs.push({ name, stat, value: val }); save(); }
     }
 
-function updateMoney(id) {
-    const char = party.find(p => p.id === id);
-    const action = prompt("Cosa vuoi fare? Scrivi 'aggiungi' o 'spendi':").toLowerCase();
-    
-    if (action !== 'aggiungi' && action !== 'spendi') {
-        alert("Azione non valida.");
-        return;
-    }
+    function updateMoney(id) {
+        const char = party.find(p => p.id === id);
+        const action = prompt("Cosa vuoi fare? Scrivi 'aggiungi' o 'spendi':").toLowerCase();
+        if (action !== 'aggiungi' && action !== 'spendi') return;
 
-    // Rimosso il prompt del Platino
-    const gp = parseInt(prompt("Monete d'Oro (mo):", 0)) || 0;
-    const sp = parseInt(prompt("Monete d'Argento (ma):", 0)) || 0;
-    const cp = parseInt(prompt("Monete di Rame (mr):", 0)) || 0;
+        const gp = parseInt(prompt("Monete d'Oro (mo):", 0)) || 0;
+        const sp = parseInt(prompt("Monete d'Argento (ma):", 0)) || 0;
+        const cp = parseInt(prompt("Monete di Rame (mr):", 0)) || 0;
 
-    // Calcolo ricalibrato senza platino
-    const changeInCopper = (gp * 100) + (sp * 10) + cp;
-
-    if (action === 'spendi') {
-        if (char.totalMoney < changeInCopper) {
-            alert("Fondi insufficienti!");
-            return;
-        }
-        char.totalMoney -= changeInCopper;
-    } else {
-        char.totalMoney = (char.totalMoney || 0) + changeInCopper;
-    }
-    
-    save();
-}
-
-function addEquip(id) {
-    const name = prompt("Nome Oggetto:");
-    const type = prompt("Tipo (Arma, Armatura, Scudo, Altro):").toLowerCase();
-    let val = "";
-    let toHit = "";
-    let dexMode = "0";
-    let manualDex = 0;
-    let stealthDis = false;
-    let useStat = null; 
-
-    if (type === 'arma') {
-        // PRIMA SCELTA: Forza
-        const autoStr = confirm("Vuoi aggiungere il bonus FOR al danno?");
-        
-        if (autoStr) {
-            val = prompt("Inserisci solo i dadi (es. 1d8):");
-            useStat = "FOR";
+        const changeInCopper = (gp * 100) + (sp * 10) + cp;
+        if (action === 'spendi') {
+            if (char.totalMoney < changeInCopper) { alert("Fondi insufficienti!"); return; }
+            char.totalMoney -= changeInCopper;
         } else {
-            // SECONDA SCELTA (Se Forza è No): Destrezza
-            const autoDex = confirm("Vuoi aggiungere il bonus DES al danno? (Per armi accurate o a gittata)");
-            
-            if (autoDex) {
-                val = prompt("Inserisci solo i dadi (es. 1d6):");
-                useStat = "DES";
-            } else {
-                // TERZA SCELTA: Valore manuale
-                val = prompt("Inserisci danno completo (es. 1d8+2):");
-                useStat = null;
-            }
+            char.totalMoney = (char.totalMoney || 0) + changeInCopper;
         }
-        toHit = prompt("Tiro per colpire (es. +5):");
-    } else if (type === 'armatura') {
-        val = prompt("CA Base dell'armatura:");
-        dexMode = prompt("Calcolo Destrezza?\n1: Piena\n2: Max +2\n3: Nessuna\n4: Manuale");
-        if (dexMode === "4") manualDex = parseInt(prompt("Bonus DES manuale:")) || 0;
-        stealthDis = confirm("Questa armatura dà svantaggio a Furtività?");
-    } else if (type === 'scudo') {
-        val = prompt("Bonus CA dello scudo:");
-    } else {
-        val = prompt("Effetto/Peso:");
-    }
-
-    if (name) {
-        party.find(p => p.id === id).equipment.push({ 
-            name, type, value: val, toHit, dexMode, manualDex, stealthDis, useStat 
-        });
         save();
     }
-}
 
-function addBuff(id) {
-    const name = prompt("Nome Fonte (es. Benedizione):");
-    const stat = prompt("Stat influenzata (es. FOR, CA, Attacco):").toUpperCase();
-    const val = parseInt(prompt("Valore bonus (es. 2):")) || 0;
-    const effect = prompt("Descrizione effetto (es. +1d4 ai tiri):");
-    
-    if (name) {
-        party.find(p => p.id === id).buffs.push({ name, stat, value: val, effect: effect });
-        save();
+    function addEquip(id) {
+        const char = party.find(p => p.id === id);
+        const name = prompt("Nome Oggetto:");
+        const type = prompt("Tipo (Arma, Armatura, Scudo, Altro):").toLowerCase();
+        let val = ""; let toHit = ""; let dexMode = "0"; let manualDex = 0; let stealthDis = false; let useStat = null; 
+
+        if (type === 'arma') {
+            const autoStr = confirm("Vuoi aggiungere il bonus FOR al danno?");
+            if (autoStr) { val = prompt("Inserisci solo i dadi (es. 1d8):"); useStat = "FOR"; } 
+            else {
+                const autoDex = confirm("Vuoi aggiungere il bonus DES al danno?");
+                if (autoDex) { val = prompt("Inserisci solo i dadi (es. 1d6):"); useStat = "DES"; } 
+                else { val = prompt("Inserisci danno completo (es. 1d8+2):"); useStat = null; }
+            }
+            toHit = prompt("Tiro per colpire (es. +5):");
+        } else if (type === 'armatura') {
+            val = prompt("CA Base dell'armatura:");
+            dexMode = prompt("Calcolo Destrezza?\n1: Piena\n2: Max +2\n3: Nessuna\n4: Manuale");
+            if (dexMode === "4") manualDex = parseInt(prompt("Bonus DES manuale:")) || 0;
+            stealthDis = confirm("Questa armatura dà svantaggio a Furtività?");
+        } else if (type === 'scudo') {
+            val = prompt("Bonus CA dello scudo:");
+        } else {
+            val = prompt("Effetto/Peso:");
+        }
+
+        if (name) {
+            char.equipment.push({ name, type, value: val, toHit, dexMode, manualDex, stealthDis, useStat });
+            save();
+        }
     }
-}
 
-    /* --- Utility --- */
     const toBase64 = file => new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -488,14 +404,13 @@ function addBuff(id) {
         save();
     }
 
-function deleteSkill(id, skillName) {
-    const char = party.find(p => p.id === id);
-    if (char && char.skills[skillName] !== undefined) {
-        // Il comando 'delete' rimuove una proprietà da un oggetto
-        delete char.skills[skillName]; 
-        save();
+    function deleteSkill(id, skillName) {
+        const char = party.find(p => p.id === id);
+        if (char && char.skills[skillName] !== undefined) {
+            delete char.skills[skillName]; 
+            save();
+        }
     }
-}
 
     function removeChar(id) {
         if(confirm("Eliminare l'eroe?")) {
@@ -504,21 +419,18 @@ function deleteSkill(id, skillName) {
         }
     }
 
-function render() {
+    function render() {
         const grid = document.getElementById('characterGrid');
         grid.innerHTML = '';
 
-party.forEach(char => {
+        party.forEach(char => {
             const coins = getDenominations(char.totalMoney || 0);
-            
-            // Definiamo le stats escludendo CA e HP perché andranno in alto
             const stats = ['FOR', 'DES', 'COS', 'INT', 'SAG', 'CAR'];
-const statsHtml = stats.map(s => {
+            
+            const statsHtml = stats.map(s => {
                 const c = calculate(char, s);
                 const mod = getModifier(c.total);
-                // Calcoliamo il bonus totale per questa statistica
                 const currentBonus = c.total - (char.baseStats[s] || 0);
-
                 return `
                     <div class="stat-box">
                         <small>${s}</small><br>
@@ -532,10 +444,10 @@ const statsHtml = stats.map(s => {
                     </div>`;
             }).join('');
 
-            // Calcolo CA e HP per il box vitality
             const currentCA = calculate(char, 'CA');
             const currentHP = calculate(char, 'PF');
-grid.innerHTML += `
+
+            grid.innerHTML += `
                 <div class="char-card">
                     <button class="delete-btn" style="position:absolute; top:8px; right:8px;" onclick="removeChar(${char.id})">X</button>
                     
@@ -545,19 +457,19 @@ grid.innerHTML += `
                             <input class="inline-edit" style="font-weight:bold; font-size:1.2em; width:100%" 
                                    value="${char.name}" onchange="updateField(${char.id}, 'name', this.value)">
                             
-                            <!-- Razza e Classe sopra, Livello sotto -->
                             <div class="char-info-large">
                                 <div>
                                     <input class="inline-edit" style="width:60px" value="${char.race}" onchange="updateField(${char.id}, 'race', this.value)">
                                     <input class="inline-edit" style="width:80px" value="${char.class}" onchange="updateField(${char.id}, 'class', this.value)">
                                 </div>
                                 <div style="margin-top: 2px;">
-                                    Lvl: <input type="number" class="inline-edit" style="width:30px" value="${char.level}" onchange="updateField(${char.id}, 'level', this.value)">
+                                    Lvl: <input type="number" class="inline-edit" style="width:30px" value="${char.level}" onchange="updateField(${char.id}, 'level', parseInt(this.value))">
+                                    | Prof: +<input type="number" class="inline-edit" style="width:30px" value="${char.proficiency || 2}" onchange="updateField(${char.id}, 'proficiency', parseInt(this.value))">
                                 </div>
                             </div>
                             
                             <div class="char-xp-large">
-                                EXP: <input type="number" class="inline-edit" style="width:80px" value="${char.xp || 0}" onchange="updateField(${char.id}, 'xp', this.value)">
+                                EXP: <input type="number" class="inline-edit" style="width:80px" value="${char.xp || 0}" onchange="updateField(${char.id}, 'xp', parseInt(this.value))">
                             </div>
                         </div>
                     </div>
@@ -583,25 +495,40 @@ grid.innerHTML += `
                         </div>
                     </div>
 
-<div class="stats-container">
-    <div class="main-stats">${statsHtml}</div>
-    <div class="section-title">Skill <button class="add-small" onclick="addSkill(${char.id})">+</button></div>
-    <div class="skills-list">
-        <ul>${
-Object.keys(char.skills).map(s => {
-    const total = calculate(char, s).total;
-    // Se il numero è >= 0 aggiunge il "+", altrimenti lo lascia così com'è
-    const formattedTotal = total >= 0 ? `+${total}` : total;
-    
-    return `
-        <li>
-            <span><b>${s}</b>: ${formattedTotal}</span>
-            <button class="delete-btn" onclick="deleteSkill(${char.id}, '${s}')">x</button>
-        </li>`;
-}).join('')
-        }</ul>
-    </div>
-</div>
+                    <div class="stats-container">
+                        <div class="main-stats">${statsHtml}</div>
+                        <div class="section-title">Skill <button class="add-small" onclick="addSkill(${char.id})">+</button></div>
+                        <div class="skills-list">
+                            <ul>${
+                                Object.keys(char.skills).map(s => {
+                                    const skillValue = char.skills[s];
+                                    let totalSkill;
+                                    let displayLabel = "";
+
+                                    // Se skillValue è una stringa (es. "FOR"), facciamo il calcolo automatico
+                                    if (typeof skillValue === 'string') {
+                                        const statTotal = calculate(char, skillValue).total;
+                                        const mod = Math.floor((statTotal - 10) / 2);
+                                        const prof = parseInt(char.proficiency) || 0;
+                                        totalSkill = mod + prof;
+                                        displayLabel = skillValue;
+                                    } else {
+                                        // Se è un numero, usiamo il valore manuale direttamente
+                                        totalSkill = skillValue;
+                                        displayLabel = "Man";
+                                    }
+
+                                    const formattedTotal = totalSkill >= 0 ? `+${totalSkill}` : totalSkill;
+                                    
+                                    return `
+                                        <li>
+                                            <span><b>${s}</b>: ${formattedTotal} <small>(${displayLabel})</small></span>
+                                            <button class="delete-btn" onclick="deleteSkill(${char.id}, '${s}')">x</button>
+                                        </li>`;
+                                }).join('')
+                            }</ul>
+                        </div>
+                    </div>
                     <div class="section-title">Tesoro <button class="add-small" onclick="updateMoney(${char.id})">±</button></div>
                     <div class="money-display">
                         <span class="coin-gp">${coins.gp}mo</span>
@@ -610,52 +537,29 @@ Object.keys(char.skills).map(s => {
                     </div>
 
                     <div class="section-title">Equip <button class="add-small" onclick="addEquip(${char.id})">+</button></div>
-                    
                     <div class="equip-category-title">Armi</div>
-                    <ul>${char.equipment.filter(e => e.type === 'arma').map((e, i) => {
+                    <ul>${char.equipment.filter(e => e.type === 'arma').map((e) => {
                         const originalIndex = char.equipment.indexOf(e);
-                        
-                        // LOGICA CALCOLO DANNO DINAMICO
-let finalDamage = e.value;
-
-// Se useStat esiste (è FOR o DES)
-if (e.useStat) {
-    // Recuperiamo il totale della statistica scelta (es. Destrezza)
-    const statTotal = calculate(char, e.useStat).total;
-    // Calcoliamo il modificatore
-    const mod = Math.floor((statTotal - 10) / 2);
-    const sign = mod >= 0 ? '+' : '-';
-    // Componiamo la scritta: Dadi + Modificatore
-    finalDamage = `${e.value} ${sign} ${Math.abs(mod)}`;
-}
-
-return `<li>
-            <span>
-                <b>${e.name}</b> 
-                ${e.toHit ? `[${e.toHit}]` : ''} 
-                (${finalDamage})
-            </span> 
-            <button class="delete-btn" onclick="deleteItem(${char.id}, 'equipment', ${originalIndex})">x</button>
-        </li>`;
+                        let finalDamage = e.value;
+                        if (e.useStat) {
+                            const statTotal = calculate(char, e.useStat).total;
+                            const mod = Math.floor((statTotal - 10) / 2);
+                            const sign = mod >= 0 ? '+' : '-';
+                            finalDamage = `${e.value} ${sign} ${Math.abs(mod)}`;
+                        }
+                        return `<li><span><b>${e.name}</b> ${e.toHit ? `[${e.toHit}]` : ''} (${finalDamage})</span> 
+                                <button class="delete-btn" onclick="deleteItem(${char.id}, 'equipment', ${originalIndex})">x</button></li>`;
                     }).join('')}</ul>
 
-<div class="equip-category-title">Armature e Scudi</div>
-                    <ul>${char.equipment.filter(e => e.type === 'armatura' || e.type === 'scudo').map((e, i) => {
+                    <div class="equip-category-title">Armature e Scudi</div>
+                    <ul>${char.equipment.filter(e => e.type === 'armatura' || e.type === 'scudo').map((e) => {
                         const originalIndex = char.equipment.indexOf(e);
-                        const isArmor = e.type === 'armatura';
-                        
-                        return `<li>
-                            <span>
-                                <b>${e.name}</b> 
-                                (${isArmor ? 'CA ' + e.value : '+' + e.value})
-                                ${e.stealthDis ? '<span class="dis-tag" title="Svantaggio Furtività">DIS</span>' : ''}
-                            </span> 
-                            <button class="delete-btn" onclick="deleteItem(${char.id}, 'equipment', ${originalIndex})">x</button>
-                        </li>`;
+                        return `<li><span><b>${e.name}</b> (${e.type === 'armatura' ? 'CA ' + e.value : '+' + e.value})${e.stealthDis ? '<span class="dis-tag">DIS</span>' : ''}</span> 
+                                <button class="delete-btn" onclick="deleteItem(${char.id}, 'equipment', ${originalIndex})">x</button></li>`;
                     }).join('')}</ul>
                     
                     <div class="equip-category-title">Altro</div>
-                    <ul>${char.equipment.filter(e => e.type !== 'arma' && e.type !== 'armatura' && e.type !== 'scudo').map((e, i) => {
+                    <ul>${char.equipment.filter(e => e.type !== 'arma' && e.type !== 'armatura' && e.type !== 'scudo').map((e) => {
                         const originalIndex = char.equipment.indexOf(e);
                         return `<li><span>${e.name}</span> <button class="delete-btn" onclick="deleteItem(${char.id}, 'equipment', ${originalIndex})">x</button></li>`;
                     }).join('')}</ul>
