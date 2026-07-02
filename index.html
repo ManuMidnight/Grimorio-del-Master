@@ -98,6 +98,7 @@
         ul { list-style: none; padding: 0; margin: 4px 0; }
         li { display: flex; justify-content: space-between; align-items: center; margin: 2px 0; border-bottom: 1px dotted rgba(0,0,0,0.1); }
         .delete-btn { background: #8b0000; color: white; border: none; padding: 1px 5px; cursor: pointer; border-radius: 4px; font-size: 0.9em; }
+        .edit-small { background: #2b1d0e; color: #d4af37; border: 1px solid #d4af37; padding: 1px 4px; cursor: pointer; border-radius: 4px; font-size: 0.75em; margin-right: 4px; }
         .add-small { background: var(--ink); color: var(--gold); border: 1px solid var(--gold); padding: 1px 6px; cursor: pointer; font-size: 0.75em; }
 
         .coin-gp { color: #ffd700; font-size: 1.2em; font-weight: bold; text-shadow: 1px 1px 2px #000; }
@@ -162,6 +163,16 @@
             margin-top: 5px;
             margin-bottom: 3px;
         }
+
+        .equip-item {
+            cursor: grab;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .equip-item:hover { background: rgba(0,0,0,0.08); }
+        .equip-item:active { cursor: grabbing; }
+
         ul li { font-size: 1.1em; }
         .buffed { font-size: 1.1em; }
         .buffed small { font-size: 0.85em; opacity: 0.9; }
@@ -198,7 +209,6 @@
 
     // --- LOGICA DI OTTIMIZZAZIONE IMMAGINI ---
     
-    // Questa funzione riduce le dimensioni dell'immagine per risparmiare memoria
     async function processImage(file) {
         return new Promise((resolve) => {
             const reader = new FileReader();
@@ -208,7 +218,7 @@
                 img.src = event.target.result;
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 150; // Dimensione ideale per un token circolare
+                    const MAX_WIDTH = 150; 
                     const scaleSize = MAX_WIDTH / img.width;
                     canvas.width = MAX_WIDTH;
                     canvas.height = img.height * scaleSize;
@@ -216,7 +226,6 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     
-                    // Esportiamo in JPEG con qualità 0.7 per il massimo risparmio
                     resolve(canvas.toDataURL('image/jpeg', 0.7));
                 };
             };
@@ -233,13 +242,49 @@
         }
     }
 
+    // --- DRAG & DROP LOGICA ---
+    let draggedItemInfo = null;
+
+    function dragStart(event, charId, index) {
+        draggedItemInfo = { charId, index };
+        event.target.style.opacity = '0.5';
+        if(event.dataTransfer) event.dataTransfer.setData('text/plain', index);
+    }
+
+    function dragEnd(event) {
+        event.target.style.opacity = '1';
+    }
+
+    function dropEquip(event, targetCharId, targetIndex) {
+        event.preventDefault();
+        if (!draggedItemInfo || draggedItemInfo.charId !== targetCharId) return; // Non permette spostamenti tra personaggi diversi
+        
+        const sourceIndex = draggedItemInfo.index;
+        if (sourceIndex === targetIndex) return;
+
+        const char = party.find(p => p.id === targetCharId);
+        const sourceItem = char.equipment[sourceIndex];
+        const targetItem = char.equipment[targetIndex];
+
+        // Impedisce di mischiare le categorie
+        const getCat = t => t === 'arma' ? 1 : (t === 'armatura' || t === 'scudo' ? 2 : 3);
+        if(getCat(sourceItem.type) !== getCat(targetItem.type)) return;
+
+        // Esegue lo spostamento nell'array
+        const itemToMove = char.equipment.splice(sourceIndex, 1)[0];
+        const newTargetIndex = char.equipment.indexOf(targetItem);
+        char.equipment.splice(newTargetIndex, 0, itemToMove);
+
+        draggedItemInfo = null;
+        save();
+    }
+
     // --- FUNZIONI DI GESTIONE PERSONAGGIO ---
 
     async function addCharacter() {
         const file = document.getElementById('pImage').files[0];
         let imgBase64 = "";
         
-        // Se c'è un file, usiamo la nostra nuova funzione di compressione
         if (file) {
             imgBase64 = await processImage(file);
         }
@@ -271,7 +316,6 @@
         party.push(char);
         save();
 
-        // Reset dei campi input
         document.getElementById('pName').value = "";
         document.getElementById('pImage').value = "";
     }
@@ -297,6 +341,22 @@
         const char = party.find(p => p.id === id);
         char.baseStats[stat] = (parseInt(value) || 0) - currentBonus;
         save(); 
+    }
+
+    function editEquipmentPrompt(id, index) {
+        const char = party.find(p => p.id === id);
+        if (!char || !char.equipment[index]) return;
+        
+        const currentItem = char.equipment[index];
+        const newName = prompt("Modifica Nome Oggetto:", currentItem.name);
+        if (newName === null) return;
+
+        const newValue = prompt("Modifica Quantità / Note (es. x2, 5kg, o lascia vuoto):", currentItem.value || "");
+        if (newValue === null) return;
+
+        currentItem.name = newName || "Oggetto";
+        currentItem.value = newValue;
+        save();
     }
 
     function getModifier(score) {
@@ -426,7 +486,7 @@
         } else if (type === 'scudo') {
             val = prompt("Bonus CA dello scudo:");
         } else {
-            val = prompt("Effetto/Peso:");
+            val = prompt("Quantità o Note (es. x2 o lascia vuoto):");
         }
 
         if (name) {
@@ -473,7 +533,7 @@
                         <input type="number" 
                                class="inline-edit vit-val ${c.isBuffed ? 'is-buffed-val' : ''}" 
                                title="${c.isBuffed ? c.tooltip : ''}"
-                               style="font-size:1.5em; width:35px; text-align:center;" 
+                               style="font-size:1.5em; width:45px; text-align:center;" 
                                value="${c.total}" 
                                onchange="updateStat(${char.id}, '${s}', this.value, ${currentBonus})">
                         <span class="mod-tag">(${mod})</span>
@@ -581,25 +641,49 @@
                             const sign = mod >= 0 ? '+' : '-';
                             finalDamage = `${e.value} ${sign} ${Math.abs(mod)}`;
                         }
-                        return `<li><span><b>${e.name}</b> ${e.toHit ? `[${e.toHit}]` : ''} (${finalDamage})</span> 
-                                <button class="delete-btn" onclick="deleteItem(${char.id}, 'equipment', ${originalIndex})">x</button></li>`;
+                        const toolTipText = `Danno: ${finalDamage}${e.toHit ? ', TxC: [' + e.toHit + ']' : ''}`;
+                        return `<li class="equip-item" title="${toolTipText}" draggable="true" ondragstart="dragStart(event, ${char.id}, ${originalIndex})" ondragend="dragEnd(event)" ondragover="event.preventDefault()" ondrop="dropEquip(event, ${char.id}, ${originalIndex})">
+                            <span><b>${e.name}</b> ${e.toHit ? `[${e.toHit}]` : ''} (${finalDamage})</span> 
+                            <div>
+                                <button class="delete-btn" onclick="deleteItem(${char.id}, 'equipment', ${originalIndex})">x</button>
+                            </div>
+                        </li>`;
                     }).join('')}</ul>
 
                     <div class="equip-category-title">Armature e Scudi</div>
                     <ul>${char.equipment.filter(e => e.type === 'armatura' || e.type === 'scudo').map((e) => {
                         const originalIndex = char.equipment.indexOf(e);
-                        return `<li><span><b>${e.name}</b> (${e.type === 'armatura' ? 'CA ' + e.value : '+' + e.value})${e.stealthDis ? '<span class="dis-tag">DIS</span>' : ''}</span> 
-                                <button class="delete-btn" onclick="deleteItem(${char.id}, 'equipment', ${originalIndex})">x</button></li>`;
+                        const toolTipText = `${e.type === 'armatura' ? 'CA Base: ' : 'Bonus Scudo: '}${e.value}${e.stealthDis ? ' (Svantaggio a Furtività)' : ''}`;
+                        return `<li class="equip-item" title="${toolTipText}" draggable="true" ondragstart="dragStart(event, ${char.id}, ${originalIndex})" ondragend="dragEnd(event)" ondragover="event.preventDefault()" ondrop="dropEquip(event, ${char.id}, ${originalIndex})">
+                            <span><b>${e.name}</b> (${e.type === 'armatura' ? 'CA ' + e.value : '+' + e.value})${e.stealthDis ? '<span class="dis-tag">DIS</span>' : ''}</span> 
+                            <div>
+                                <button class="delete-btn" onclick="deleteItem(${char.id}, 'equipment', ${originalIndex})">x</button>
+                            </div>
+                        </li>`;
                     }).join('')}</ul>
                     
                     <div class="equip-category-title">Altro</div>
                     <ul>${char.equipment.filter(e => e.type !== 'arma' && e.type !== 'armatura' && e.type !== 'scudo').map((e) => {
                         const originalIndex = char.equipment.indexOf(e);
-                        return `<li><span>${e.name}</span> <button class="delete-btn" onclick="deleteItem(${char.id}, 'equipment', ${originalIndex})">x</button></li>`;
+                        const displayValue = e.value ? `<b>${e.value}</b> ` : '';
+                        const toolTipText = `Nome: ${e.name}\nQuantità/Note: ${e.value || 'Nessuna'}`;
+                        return `<li class="equip-item" title="${toolTipText}" draggable="true" ondragstart="dragStart(event, ${char.id}, ${originalIndex})" ondragend="dragEnd(event)" ondragover="event.preventDefault()" ondrop="dropEquip(event, ${char.id}, ${originalIndex})">
+                            <span>${displayValue}${e.name}</span>
+                            <div>
+                                <button class="edit-small" onclick="editEquipmentPrompt(${char.id}, ${originalIndex})">📝</button>
+                                <button class="delete-btn" onclick="deleteItem(${char.id}, 'equipment', ${originalIndex})">x</button>
+                            </div>
+                        </li>`;
                     }).join('')}</ul>
 
                     <div class="section-title">Buff <button class="add-small" onclick="addBuff(${char.id})">+</button></div>
-                    <ul>${char.buffs.map((b, i) => `<li><span class="buffed">✨ ${b.name} <small>(${b.stat})</small></span> <button class="delete-btn" onclick="deleteItem(${char.id}, 'buffs', ${i})">x</button></li>`).join('')}</ul>
+                    <ul>${char.buffs.map((b, i) => {
+                        const toolTipText = `Modifica ${b.stat} di ${b.value > 0 ? '+' : ''}${b.value}`;
+                        return `<li title="${toolTipText}">
+                            <span class="buffed">✨ ${b.name} <small>(${b.stat})</small></span> 
+                            <button class="delete-btn" onclick="deleteItem(${char.id}, 'buffs', ${i})">x</button>
+                        </li>`;
+                    }).join('')}</ul>
                 </div>
             `;
         });
