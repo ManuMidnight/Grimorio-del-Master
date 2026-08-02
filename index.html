@@ -198,6 +198,11 @@
             <div class="form-group"><label>CAR</label><input type="number" id="pCHA" value="10"></div>
             <div class="form-group" style="grid-column: span 2;"><label>Token Immagine</label><input type="file" id="pImage" accept="image/*"></div>
             <button onclick="addCharacter()" style="grid-column: span 2; background: var(--ink); color: var(--gold); font-weight: bold;">EVOCA EROE</button>
+            <button onclick="exportData()" style="grid-column: span 1; background: #2b1d0e; color: #d4af37; font-weight: bold; cursor: pointer;">💾 ESPORTA DATI</button>
+            <div style="grid-column: span 1; display: flex; flex-direction: column;">
+                <label for="importFile" style="cursor:pointer; background: #2b1d0e; color: #d4af37; padding: 5px; text-align: center; border: 1px solid #2b1d0e; font-weight: bold; flex-grow: 1; display: flex; align-items: center; justify-content: center;">📂 IMPORTA DATI</label>
+                <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+            </div>
         </div>
     </div>
 
@@ -240,6 +245,57 @@
             console.error("Errore di memoria:", e);
             alert("Attenzione: Lo spazio di archiviazione è esaurito! Prova a eliminare qualche vecchio eroe.");
         }
+    }
+
+    // --- BACKUP & RIPRISTINO ---
+
+    function exportData() {
+        // Trasforma l'array party in una stringa JSON formattata
+        const dataStr = JSON.stringify(party, null, 2);
+        // Crea un file virtuale (Blob)
+        const blob = new Blob([dataStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        
+        // Crea un link invisibile per forzare il download
+        const a = document.createElement('a');
+        a.href = url;
+        const date = new Date().toISOString().split('T')[0]; // Formato YYYY-MM-DD
+        a.download = `grimorio_backup_${date}.json`;
+        document.body.appendChild(a);
+        a.click();
+        
+        // Pulizia
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    function importData(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const importedData = JSON.parse(e.target.result);
+                // Controllo basico per assicurarsi che i dati siano un array
+                if (Array.isArray(importedData)) {
+                    if(confirm("Attenzione: questa operazione sovrascriverà i personaggi attuali. Vuoi procedere?")) {
+                        party = importedData;
+                        save(); // Questo salverà nel localStorage e chiamerà render() in automatico
+                        alert("Dati ripristinati con successo dal Grimorio!");
+                    }
+                } else {
+                    alert("Il file non ha il formato corretto per questa applicazione.");
+                }
+            } catch (err) {
+                console.error("Errore di parsing:", err);
+                alert("Impossibile leggere il file. Assicurati che sia il backup corretto.");
+            }
+        };
+        reader.readAsText(file);
+        
+        // Resetta l'input per permettere di ricaricare lo stesso file se necessario in futuro
+        event.target.value = "";
     }
 
     // --- DRAG & DROP LOGICA ---
