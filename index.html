@@ -300,11 +300,18 @@
 
     // --- DRAG & DROP LOGICA ---
     let draggedItemInfo = null;
+    let draggedSkillInfo = null;
 
     function dragStart(event, charId, index) {
         draggedItemInfo = { charId, index };
         event.target.style.opacity = '0.5';
         if(event.dataTransfer) event.dataTransfer.setData('text/plain', index);
+    }
+
+    function dragStartSkill(event, charId, skillKey) {
+        draggedSkillInfo = { charId, skillKey };
+        event.target.style.opacity = '0.5';
+        if(event.dataTransfer) event.dataTransfer.setData('text/plain', skillKey);
     }
 
     function dragEnd(event) {
@@ -332,6 +339,34 @@
         char.equipment.splice(newTargetIndex, 0, itemToMove);
 
         draggedItemInfo = null;
+        save();
+    }
+
+    function dropSkill(event, targetCharId, targetSkillKey) {
+        event.preventDefault();
+        if (!draggedSkillInfo || draggedSkillInfo.charId !== targetCharId) return; // Limita lo spostamento allo stesso personaggio
+
+        const sourceKey = draggedSkillInfo.skillKey;
+        if (sourceKey === targetSkillKey) return;
+
+        const char = party.find(p => p.id === targetCharId);
+        const keys = Object.keys(char.skills);
+        
+        const sourceIndex = keys.indexOf(sourceKey);
+        const targetIndex = keys.indexOf(targetSkillKey);
+
+        // Rimuove la skill dalla vecchia posizione e la inserisce in quella nuova
+        keys.splice(sourceIndex, 1);
+        keys.splice(targetIndex, 0, sourceKey);
+
+        // Ricrea l'oggetto delle skills rispettando il nuovo ordine
+        const newSkills = {};
+        keys.forEach(k => {
+            newSkills[k] = char.skills[k];
+        });
+
+        char.skills = newSkills;
+        draggedSkillInfo = null;
         save();
     }
 
@@ -671,9 +706,9 @@
                                     const formattedTotal = totalSkill >= 0 ? `+${totalSkill}` : totalSkill;
                                     
                                     return `
-                                        <li>
+                                        <li class="equip-item" draggable="true" ondragstart="dragStartSkill(event, ${char.id}, '${s.replace(/'/g, "\\'")}')" ondragend="dragEnd(event)" ondragover="event.preventDefault()" ondrop="dropSkill(event, ${char.id}, '${s.replace(/'/g, "\\'")}')">
                                             <span><b>${s}</b>: ${formattedTotal} <small>(${displayLabel})</small></span>
-                                            <button class="delete-btn" onclick="deleteSkill(${char.id}, '${s}')">x</button>
+                                            <button class="delete-btn" onclick="deleteSkill(${char.id}, '${s.replace(/'/g, "\\'")}')">x</button>
                                         </li>`;
                                 }).join('')
                             }</ul>
